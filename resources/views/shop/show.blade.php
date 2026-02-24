@@ -4,7 +4,11 @@
 
 @include('componentes.header')
 
-<div class="container py-5">
+@php
+    $autoPlayVideo = request()->has('video');
+@endphp
+
+<div class="{{ $autoPlayVideo ? 'container-fluid p-0' : 'container py-5' }}">
 
     <div class="row">
         {{-- GALERÍA --}}
@@ -50,7 +54,6 @@
             }
 
             $showVideoFirst = !empty($videoEmbed);
-            $autoPlayVideo = request()->has('video');
 
             // IMÁGENES
             $images = [];
@@ -86,9 +89,11 @@
                         @if($showVideoFirst)
                             @if($autoPlayVideo)
                                 {{-- VIDEO MODO GRANDE --}}
-                                <div class="ratio ratio-16x9 mx-auto" style="max-width:100%;">
+                                <div class="ratio ratio-16x9"
+                                    style="{{ $autoPlayVideo ? 'width:100vw;height:100vh;' : 'max-width:600px;margin:auto;' }}">
                                     <iframe
                                         src="{{ $videoEmbed }}?autoplay=1&rel=0&modestbranding=1"
+                                        style="{{ $autoPlayVideo ? 'width:100%;height:100%;' : '' }}"
                                         frameborder="0"
                                         allow="autoplay; encrypted-media"
                                         allowfullscreen>

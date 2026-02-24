@@ -50,6 +50,7 @@
             }
 
             $showVideoFirst = !empty($videoEmbed);
+            $autoPlayVideo = request()->has('video');
 
             // IMÁGENES
             $images = [];
@@ -83,14 +84,26 @@
                     <div id="mainMediaContainer" class="text-center mb-3">
 
                         @if($showVideoFirst)
-                            <div class="ratio ratio-16x9 mx-auto" style="max-width:600px;">
-                                <iframe
-                                    src="{{ $videoEmbed }}?rel=0&modestbranding=1"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen>
-                                </iframe>
-                            </div>
+                            @if($autoPlayVideo)
+                                {{-- VIDEO MODO GRANDE --}}
+                                <div class="ratio ratio-16x9 mx-auto" style="max-width:100%;">
+                                    <iframe
+                                        src="{{ $videoEmbed }}?autoplay=1&rel=0&modestbranding=1"
+                                        frameborder="0"
+                                        allow="autoplay; encrypted-media"
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                            @else
+                                {{-- VIDEO NORMAL --}}
+                                <div class="ratio ratio-16x9 mx-auto" style="max-width:600px;">
+                                    <iframe
+                                        src="{{ $videoEmbed }}?rel=0&modestbranding=1"
+                                        frameborder="0"
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                            @endif
                         @elseif(!empty($images))
                             <img src="{{ asset('storage/'.str_replace('\\','/',$images[0])) }}"
                                 class="img-fluid rounded"
@@ -300,6 +313,27 @@ document.addEventListener("DOMContentLoaded", function () {
                  </div>`;
         });
     });
+
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if(urlParams.has('video')){
+
+        const iframe = document.querySelector("#mainMediaContainer iframe");
+
+        if(iframe){
+            iframe.scrollIntoView({ behavior: "smooth" });
+
+            setTimeout(() => {
+                if (iframe.requestFullscreen) {
+                    iframe.requestFullscreen();
+                }
+            }, 800);
+        }
+    }
 
 });
 </script>

@@ -56,4 +56,34 @@ class HomeController extends Controller
 
         return view('libro-reclamaciones', compact('company'));
     }
+
+    public function correoContact(Request $request)
+    {
+        $request->validate([
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+       
+
+        $correo = new Contactanos($request->all());
+        try {
+            Mail::to('contacto@asrramirez.com')->send($correo);
+            return response()->json(['status' => true, 'msg' => "El correo fue enviado satisfactoriamente"]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'msg' => "Hubo un error al enviar, inténtalo de nuevo más tarde." . $e->getMessage()]);
+        }
+    }
+
+    public function correoReclamo(Request $request)
+    {
+        $correo = new Reclamos($request);
+        try {
+            Mail::to('reclamos@asrramirez.com')->send($correo);
+            return response()->json(['status' => true, 'msg' => "El correo fue enviado satisfactoriamente"]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'msg' => "Hubo un error al enviar, inténtalo de nuevo más tarde." . $e->getMessage()]);
+        }
+    }
 }

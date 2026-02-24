@@ -88,6 +88,9 @@ Route::get('/contact', [HomeController::class, 'contact'])
 
 Route::get('/libro-reclamaciones', [App\Http\Controllers\HomeController::class, 'reclamaciones'])->name('libro.reclamaciones');
 
+Route::post('/contact/send', [App\Http\Controllers\HomeController::class, 'correoContact'])->name('contact.send');
+Route::post('/reclamo',[App\Http\Controllers\HomeController::class,'correoReclamo']);
+
 
 Route::prefix('checkout')->group(function () {
 

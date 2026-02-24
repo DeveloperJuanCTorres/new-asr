@@ -98,8 +98,9 @@ class ShopController extends Controller
             ->paginate(12);
 
         $categories = Taxonomy::where('is_active', 1)->get();
+        $company = Company::first();
 
-        return view('shop.index', compact('products', 'categories'));
+        return view('shop.index', compact('products', 'categories', 'company'));
     }
 
     /*

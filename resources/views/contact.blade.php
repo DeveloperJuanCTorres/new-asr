@@ -25,7 +25,7 @@
                 <div class="contact-card text-center p-4">
                     <i class="bi bi-telephone fs-2 text-warning"></i>
                     <h5 class="mt-3">Teléfono</h5>
-                    <p class="text-muted mb-0">+51 999 999 999</p>
+                    <p class="text-muted mb-0">{{$company->phone}}</p>
                 </div>
             </div>
 
@@ -33,7 +33,7 @@
                 <div class="contact-card text-center p-4">
                     <i class="bi bi-envelope fs-2 text-warning"></i>
                     <h5 class="mt-3">Correo</h5>
-                    <p class="text-muted mb-0">ventas@turepuestos.com</p>
+                    <p class="text-muted mb-0">{{$company->email}}</p>
                 </div>
             </div>
 
@@ -41,7 +41,7 @@
                 <div class="contact-card text-center p-4">
                     <i class="bi bi-geo-alt fs-2 text-warning"></i>
                     <h5 class="mt-3">Ubicación</h5>
-                    <p class="text-muted mb-0">Lima, Perú</p>
+                    <p class="text-muted mb-0">{{$company->address}}</p>
                 </div>
             </div>
 

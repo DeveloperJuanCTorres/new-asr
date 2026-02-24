@@ -140,7 +140,7 @@
                             </div>                         
                         </div>
                         <div class="col-lg-12 my-4 text-center">
-                            <button class="btn btn-primary py-3 EnviarReclamo">Enviar reclamo</button>
+                            <button class="btn btn-warning py-3 EnviarReclamo">Enviar reclamo</button>
                         </div>
                     </div>
                 </div>                

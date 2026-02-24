@@ -440,3 +440,44 @@
 .cta-section {
     background: linear-gradient(135deg, #111, #1B263B);
 }
+
+
+.nav-link {
+    position: relative;
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    width: 0;
+    height: 2px;
+    background: #ffc107;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link.active::after {
+    width: 40px;
+}
+
+
+.filter-list a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.filter-list a:hover {
+    background: #f8f9fa;
+}
+
+.filter-list a.active-category {
+    background: #ffc107;
+    color: #000;
+    font-weight: 600;
+}

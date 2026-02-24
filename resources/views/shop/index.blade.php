@@ -18,7 +18,8 @@
                     <ul class="filter-list">
                         @foreach($categories as $category)
                             <li>
-                                <a href="{{ route('shop.category', $category->slug) }}">
+                                <a href="{{ route('shop.category', $category->slug) }}"
+                                class="{{ request()->route('slug') == $category->slug ? 'active-category' : '' }}">
                                     {{ $category->name }}
                                 </a>
                             </li>

@@ -39,16 +39,16 @@
                 <!-- Links -->
                 <ul class="navbar-nav me-4">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('home') }}">Inicio</a>
+                        <a class="nav-link {{ request()->routeIs('home') ? 'active fw-bold' : '' }}" href="{{ route('home') }}">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('shop.index') }}">Tienda</a>
+                        <a class="nav-link {{ request()->routeIs('shop.index') ? 'active fw-bold' : '' }}" href="{{ route('shop.index') }}">Tienda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('about') }}">Nosotros</a>
+                        <a class="nav-link {{ request()->routeIs('about') ? 'active fw-bold' : '' }}" href="{{ route('about') }}">Nosotros</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('contact') }}">Contáctanos</a>
+                        <a class="nav-link {{ request()->routeIs('contact') ? 'active fw-bold' : '' }}" href="{{ route('contact') }}">Contáctanos</a>
                     </li>
                 </ul>
 
@@ -130,10 +130,10 @@
                     <a class="nav-link" href="{{ route('shop.index') }}">Tienda</a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a class="nav-link" href="#">Nosotros</a>
+                    <a class="nav-link" href="{{ route('about') }}">Nosotros</a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a class="nav-link" href="#">Contáctanos</a>
+                    <a class="nav-link" href="{{ route('contact') }}">Contáctanos</a>
                 </li>
             </ul>
 

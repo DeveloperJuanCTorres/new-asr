@@ -13,4 +13,9 @@ class Product extends Model
     {
         return $this->belongsTo(Taxonomy::class);
     }
+
+    public function brand()
+    {
+        return $this->belongsTo(\App\Models\Brand::class);
+    }
 }

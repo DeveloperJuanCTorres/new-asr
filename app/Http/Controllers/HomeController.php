@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Banner;
+use App\Models\Company;
 use App\Models\Product;
 use App\Models\Taxonomy;
 use Illuminate\Http\Request;
@@ -32,17 +33,20 @@ class HomeController extends Controller
                                     ->take(8)
                                     ->get();
         $banners = Banner::all();
+        $company = Company::first();
 
-        return view('home', compact('categories', 'featured_products', 'banners'));
+        return view('home', compact('categories', 'featured_products', 'banners', 'company'));
     }
 
     public function about()
     {
-        return view('about');
+        $company = Company::first();
+        return view('about', compact('company'));
     }
 
     public function contact()
     {
-        return view('contact');
+        $company = Company::first();
+        return view('contact', compact('company'));
     }
 }

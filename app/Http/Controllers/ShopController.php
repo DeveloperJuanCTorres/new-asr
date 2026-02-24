@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Product;
 use App\Models\Taxonomy;
 use Illuminate\Http\Request;
@@ -78,7 +79,9 @@ class ShopController extends Controller
 
         $categories = Taxonomy::where('is_active', 1)->get();
 
-        return view('shop.index', compact('products', 'categories'));
+        $company = Company::first();
+
+        return view('shop.index', compact('products', 'categories', 'company'));
     }
 
     /*
@@ -106,10 +109,21 @@ class ShopController extends Controller
     */
     public function show($slug)
     {
+        // $product = Product::where('slug', $slug)
+        //     ->where('status', 1)
+        //     ->firstOrFail();
+                
         $product = Product::where('slug', $slug)
-            ->where('status', 1)
-            ->firstOrFail();
+        ->with(['brand', 'taxonomy'])
+        ->firstOrFail();
 
-        return view('shop.show', compact('product'));
+        $relatedProducts = Product::where('taxonomy_id', $product->category_id)
+        ->where('id', '!=', $product->id)
+        ->take(4)
+        ->get();
+
+        $company = Company::first();
+
+        return view('shop.show', compact('product', 'relatedProducts', 'company'));
     }
 }

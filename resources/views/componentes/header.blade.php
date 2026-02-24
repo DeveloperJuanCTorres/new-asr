@@ -1,7 +1,7 @@
 <header class="main-header sticky-top">
 
     <!-- Top Bar -->
-    <div class="top-bar py-2">
+    <!-- <div class="top-bar py-2">
         <div class="container d-flex justify-content-between small">
             <div>
                 🚚 Envíos a todo el Perú
@@ -15,7 +15,7 @@
                 @endauth
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Main Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark main-navbar">

@@ -9,15 +9,14 @@
                 <img src="/images/logo-asr.png" height="45" class="mb-3" alt="Logo">
 
                 <p class="footer-description">
-                    Somos especialistas en repuestos originales para mototaxis y motos lineales.
-                    Stock real, precios especiales y envíos a todo el Perú.
+                    {{$company->description}}
                 </p>
 
                 <!-- Redes -->
                 <div class="social-icons mt-3">
-                    <a href="#"><i class="bi bi-facebook"></i></a>
-                    <a href="#"><i class="bi bi-instagram"></i></a>
-                    <a href="#"><i class="bi bi-whatsapp"></i></a>
+                    <a href="{{$company->link_facebook}}"><i class="bi bi-facebook"></i></a>
+                    <a href="{{$company->link_instagram}}"><i class="bi bi-instagram"></i></a>
+                    <a href="{{$company->link_youtube}}"><i class="bi bi-youtube"></i></a>
                 </div>
             </div>
 
@@ -27,8 +26,8 @@
                 <ul class="footer-links">
                     <li><a href="{{ route('home') }}">Inicio</a></li>
                     <li><a href="{{ route('shop.index') }}">Tienda</a></li>
-                    <li><a href="#">Nosotros</a></li>
-                    <li><a href="#">Contáctanos</a></li>
+                    <li><a href="{{ route('about') }}">Nosotros</a></li>
+                    <li><a href="{{ route('contact') }}">Contáctanos</a></li>
                     <li><a href="{{ route('cart.index') }}">Carrito</a></li>
                 </ul>
             </div>
@@ -52,15 +51,15 @@
                 <h6 class="footer-title">Contacto</h6>
 
                 <p class="mb-1">
-                    📍 Lima, Perú
+                    📍 {{$company->address}}
                 </p>
 
                 <p class="mb-1">
-                    📞 +51 999 999 999
+                    📞 {{$company->phone}}
                 </p>
 
                 <p class="mb-1">
-                    ✉ ventas@tutienda.com
+                    ✉ {{$company->email}}
                 </p>
 
                 <!-- Libro de reclamaciones -->

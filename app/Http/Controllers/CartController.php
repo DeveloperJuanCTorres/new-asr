@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -10,8 +11,9 @@ class CartController extends Controller
     public function index()
     {
         $cart = session()->get('cart', []);
+        $company = Company::first();
 
-        return view('shop.cart', compact('cart'));
+        return view('shop.cart', compact('cart', 'company'));
     }
 
     public function add(Request $request)

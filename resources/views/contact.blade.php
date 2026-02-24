@@ -61,29 +61,29 @@
 
                 <h3 class="mb-4 fw-bold">Envíanos un mensaje</h3>
 
-                <form method="POST" action="{{ route('contact.send') }}" enctype="multipart/form-data">
+                <form id="contactForm" method="POST" action="{{ route('contact.send') }}" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row g-3">
 
                         <div class="col-md-6">
                             <label class="form-label">Nombre</label>
-                            <input type="text" class="form-control form-control-lg" id="name" name="name" required>
+                            <input type="text" class="form-control form-control-lg inputTexto" id="name" name="name" required>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label">Teléfono</label>
-                            <input type="text" class="form-control form-control-lg" id="phone" name="phone">
+                            <input type="text" class="form-control form-control-lg inputTexto" id="phone" name="phone">
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">Correo electrónico</label>
-                            <input type="email" class="form-control form-control-lg" id="email" name="email" required>
+                            <input type="email" class="form-control form-control-lg inputTexto" id="email" name="email" required>
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">Mensaje</label>
-                            <textarea rows="5" class="form-control form-control-lg" id="message" name="message" required></textarea>
+                            <textarea rows="5" class="form-control form-control-lg inputTexto" id="message" name="message" required></textarea>
                         </div>
 
                         <div class="col-12">
@@ -134,5 +134,113 @@
 </section>
 
 @include('componentes.footer')
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    document.querySelectorAll('.inputTexto').forEach(function (input) {
+        input.addEventListener('input', function (e) {
+            const prohibido = /[<>{};*$%=()&]/g; // Caracteres que quieres bloquear
+            if (prohibido.test(e.target.value)) {
+                e.target.value = e.target.value.replace(prohibido, '');
+            }
+        });
+    });
+</script> 
+
+<script>
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        let form = this;
+        let formData = new FormData(form);
+
+        // Mostrar loading
+        Swal.fire({
+            title: 'Enviando...',
+            text: 'Por favor espere',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+
+        fetch(form.action, {
+            method: form.method,
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            Swal.close(); // cerrar loading
+
+            if (data.status) {
+                const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+                });
+                Toast.fire({
+                icon: "success",
+                title: data.msg
+                });  
+
+                form.reset(); // limpiar formulario
+            } else {
+                const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+                });
+                Toast.fire({
+                icon: "error",
+                title: data.msg
+                });  
+
+                form.reset(); // limpiar formulario
+            }
+        })
+        .catch(error => {
+            Swal.close();
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+                });
+                Toast.fire({
+                icon: "error",
+                title: 'Hubo un problema al enviar. Inténtalo más tarde.'
+                });  
+            
+                form.reset(); // limpiar formulario
+            console.error(error);
+        });
+    });
+</script>
+@endpush
 
 @endsection

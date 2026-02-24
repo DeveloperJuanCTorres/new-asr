@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Contactanos;
+use App\Mail\Reclamos;
 use App\Models\Banner;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\Taxonomy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {

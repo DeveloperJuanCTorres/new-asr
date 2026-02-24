@@ -86,6 +86,7 @@ Route::get('/about', [HomeController::class, 'about'])
 Route::get('/contact', [HomeController::class, 'contact'])
     ->name('contact');
 
+Route::get('/libro-reclamaciones', [App\Http\Controllers\HomeController::class, 'reclamaciones'])->name('libro.reclamaciones');
 
 
 Route::prefix('checkout')->group(function () {
@@ -100,8 +101,6 @@ Route::prefix('checkout')->group(function () {
         ->name('checkout.thankyou');
 });
 
-Route::view('/libro-de-reclamaciones', 'pages.libro')
-    ->name('libro.reclamaciones');
 
 
 Route::group(['prefix' => 'admin'], function () {

@@ -85,29 +85,27 @@
             @endif
 
             {{-- FORMULARIO AGREGAR AL CARRITO --}}
-            <form action="{{ route('cart.add', $product->id) }}" method="POST">
-                @csrf
+            
+            <div class="d-flex align-items-center mb-3">
+                <label class="me-2 fw-bold">Cantidad:</label>
+                <input type="number"
+                        name="quantity"
+                        value="1"
+                        min="1"
+                        max="{{ $product->stock }}"
+                        class="form-control"
+                        style="width:100px;">
+            </div>
 
-                <div class="d-flex align-items-center mb-3">
-                    <label class="me-2 fw-bold">Cantidad:</label>
-                    <input type="number"
-                           name="quantity"
-                           value="1"
-                           min="1"
-                           max="{{ $product->stock }}"
-                           class="form-control"
-                           style="width:100px;">
-                </div>
-
-                <button type="submit"
-                        class="btn btn-warning btn-lg w-100 fw-bold shadow">
-                    Agregar al carrito
-                </button>
-            </form>
-
-            <button class="btn btn-dark btn-lg w-100 mt-3">
-                Comprar ahora
+            <button type="button"
+                    class="btn btn-warning btn-lg w-100 fw-bold shadow add-to-cart-btn"
+                    data-id="{{ $product->id }}">
+                Agregar al carrito
             </button>
+
+            <!-- <button class="btn btn-dark btn-lg w-100 mt-3">
+                Comprar ahora
+            </button> -->
 
             <hr>
 
@@ -203,6 +201,80 @@
             document.getElementById('mainImage').src = this.src;
         });
     });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".add-to-cart-btn").forEach(button => {
+
+        button.addEventListener("click", function () {
+
+            let productId = this.dataset.id;
+
+            fetch("{{ route('cart.add') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    product_id: productId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success){
+
+                    // Actualizar contador desktop
+                    let cartCount = document.getElementById("cart-count");
+                    if(cartCount){
+                        cartCount.innerText = data.cart_count;
+                        cartCount.classList.add("bump");
+
+                        setTimeout(() => {
+                            cartCount.classList.remove("bump");
+                        }, 300);
+                    }
+
+                    // Actualizar contador mobile
+                    let cartCountMobile = document.getElementById("cart-count-mobile");
+                    if(cartCountMobile){
+                        cartCountMobile.innerText = data.cart_count;
+                    }
+
+                    // Notificación elegante
+                    showToast("Producto agregado al carrito 🛒");
+
+                }
+
+            });
+
+        });
+
+    });
+
+});
+
+function showToast(message) {
+
+    let toast = document.createElement("div");
+    toast.innerText = message;
+    toast.style.position = "fixed";
+    toast.style.bottom = "20px";
+    toast.style.right = "20px";
+    toast.style.background = "#000";
+    toast.style.color = "#fff";
+    toast.style.padding = "12px 20px";
+    toast.style.borderRadius = "10px";
+    toast.style.zIndex = "9999";
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 2500);
+}
 </script>
 @endpush
 

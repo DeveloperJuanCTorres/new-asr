@@ -61,29 +61,29 @@
 
                 <h3 class="mb-4 fw-bold">Envíanos un mensaje</h3>
 
-                <form method="POST" action="#">
+                <form method="POST" action="{{ route('contact.send') }}" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row g-3">
 
                         <div class="col-md-6">
                             <label class="form-label">Nombre</label>
-                            <input type="text" class="form-control form-control-lg" required>
+                            <input type="text" class="form-control form-control-lg" id="name" name="name" required>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label">Teléfono</label>
-                            <input type="text" class="form-control form-control-lg">
+                            <input type="text" class="form-control form-control-lg" id="phone" name="phone">
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">Correo electrónico</label>
-                            <input type="email" class="form-control form-control-lg" required>
+                            <input type="email" class="form-control form-control-lg" id="email" name="email" required>
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">Mensaje</label>
-                            <textarea rows="5" class="form-control form-control-lg" required></textarea>
+                            <textarea rows="5" class="form-control form-control-lg" id="message" name="message" required></textarea>
                         </div>
 
                         <div class="col-12">

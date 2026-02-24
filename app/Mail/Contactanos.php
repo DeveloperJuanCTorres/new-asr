@@ -22,7 +22,7 @@ class Contactanos extends Mailable
     public function build()
     {
         $email = $this->view('email.contactanos')
-                ->subject($this->data['subject'] ?? 'Nuevo mensaje de Contáctanos') // Asunto dinámico
+                ->subject('Nuevo mensaje de Contáctanos') // Asunto dinámico
                 ->from(config('mail.from.address'), config('mail.from.name'));     // remitente seguro
        
 

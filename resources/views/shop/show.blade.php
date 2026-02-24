@@ -9,50 +9,123 @@
     <div class="row">
         {{-- GALERÍA --}}
         @php
-            // Decodificar JSON manualmente
-            $imagesRaw = $product->images;
+            $videoUrl = trim($product->video ?? '');
+            $videoEmbed = null;
+            $videoId = null;
 
-            if (!empty($imagesRaw)) {
-                $decoded = json_decode($imagesRaw, true);
-                $images = is_array($decoded) ? $decoded : [];
-            } else {
-                $images = [];
+            if (!empty($videoUrl)) {
+
+                // Parsear URL correctamente
+                $parsedUrl = parse_url($videoUrl);
+
+                if (isset($parsedUrl['host'])) {
+
+                    // Caso youtu.be
+                    if (str_contains($parsedUrl['host'], 'youtu.be')) {
+                        $videoId = ltrim($parsedUrl['path'], '/');
+                    }
+
+                    // Caso youtube.com
+                    if (str_contains($parsedUrl['host'], 'youtube.com')) {
+
+                        // Shorts
+                        if (str_contains($parsedUrl['path'], '/shorts/')) {
+                            $parts = explode('/shorts/', $parsedUrl['path']);
+                            $videoId = $parts[1] ?? null;
+                        }
+
+                        // Watch?v=
+                        if (isset($parsedUrl['query'])) {
+                            parse_str($parsedUrl['query'], $queryParams);
+                            if (isset($queryParams['v'])) {
+                                $videoId = $queryParams['v'];
+                            }
+                        }
+                    }
+                }
+
+                if (!empty($videoId)) {
+                    $videoEmbed = "https://www.youtube.com/embed/" . $videoId;
+                }
             }
 
-            $hasImages = count($images) > 0;
+            $showVideoFirst = !empty($videoEmbed);
 
-            // Imagen principal
-            $mainImage = $hasImages ? $images[0] : null;
+            // IMÁGENES
+            $images = [];
+
+            if (!empty($product->images)) {
+
+                // Si viene como JSON string
+                if (is_string($product->images)) {
+                    $decoded = json_decode($product->images, true);
+                    if (is_array($decoded)) {
+                        $images = $decoded;
+                    }
+                }
+
+                // Si ya viene como array
+                if (is_array($product->images)) {
+                    $images = $product->images;
+                }
+            }
+
+            // Si no hay imágenes múltiples, usar imagen principal
+            if (empty($images) && !empty($product->image)) {
+                $images[] = $product->image;
+            }
         @endphp
         <div class="col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
 
-                    {{-- IMAGEN PRINCIPAL --}}
-                    <div class="text-center mb-3">
-                        @if($hasImages)
-                            <img id="mainImage"
-                                src="{{ asset('storage/'.str_replace('\\','/',$mainImage)) }}"
-                                class="img-fluid rounded"
-                                style="max-height:450px; object-fit:contain;">
-                        @else
-                            <img id="mainImage"
-                                src="{{ asset('images/placeholder.png') }}"
+                    {{-- ELEMENTO PRINCIPAL --}}
+                    <div id="mainMediaContainer" class="text-center mb-3">
+
+                        @if($showVideoFirst)
+                            <div class="ratio ratio-16x9 mx-auto" style="max-width:600px;">
+                                <iframe
+                                    src="{{ $videoEmbed }}?rel=0&modestbranding=1"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                        @elseif(!empty($images))
+                            <img src="{{ asset('storage/'.str_replace('\\','/',$images[0])) }}"
                                 class="img-fluid rounded"
                                 style="max-height:450px; object-fit:contain;">
                         @endif
+
                     </div>
 
                     {{-- MINIATURAS --}}
-                    @if($hasImages && count($images) > 1)
-                        <div class="d-flex justify-content-center gap-2 flex-wrap">
-                            @foreach($images as $image)
-                                <img src="{{ asset('storage/'.str_replace('\\','/',$image)) }}"
-                                    class="img-thumbnail thumb-image"
-                                    style="width:80px; height:80px; object-fit:contain; cursor:pointer;">
-                            @endforeach
-                        </div>
-                    @endif
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+                        {{-- Miniatura de video --}}
+                        @if($showVideoFirst)
+                            <div class="video-thumb position-relative"
+                                style="width:80px; height:80px; cursor:pointer;"
+                                data-video="{{ $videoEmbed }}">
+
+                                <img src="https://img.youtube.com/vi/{{ $videoId }}/hqdefault.jpg"
+                                    class="img-thumbnail"
+                                    style="width:100%; height:100%; object-fit:cover;">
+
+                                <span class="position-absolute top-50 start-50 translate-middle text-white fs-4">
+                                    ▶
+                                </span>
+                            </div>
+                        @endif
+
+                        {{-- Miniaturas imágenes --}}
+                        @foreach($images as $image)
+                            <img src="{{ asset('storage/'.str_replace('\\','/',$image)) }}"
+                                class="img-thumbnail thumb-image"
+                                style="width:80px; height:80px; object-fit:contain; cursor:pointer;">
+                        @endforeach
+
+                    </div>
 
                 </div>
             </div>
@@ -196,11 +269,39 @@
 
 @push('scripts')
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const mainContainer = document.getElementById("mainMediaContainer");
+
+    // Click en miniaturas de imagen
     document.querySelectorAll('.thumb-image').forEach(img => {
         img.addEventListener('click', function() {
-            document.getElementById('mainImage').src = this.src;
+
+            mainContainer.innerHTML =
+                `<img src="${this.src}"
+                      class="img-fluid rounded"
+                      style="max-height:450px; object-fit:contain;">`;
         });
     });
+
+    // Click en miniatura de video
+    document.querySelectorAll('.video-thumb').forEach(video => {
+        video.addEventListener('click', function() {
+
+            let videoUrl = this.dataset.video;
+
+            mainContainer.innerHTML =
+                `<div class="ratio ratio-16x9 mx-auto" style="max-width:600px;">
+                    <iframe src="${videoUrl}?autoplay=1"
+                            frameborder="0"
+                            allow="autoplay; encrypted-media"
+                            allowfullscreen>
+                    </iframe>
+                 </div>`;
+        });
+    });
+
+});
 </script>
 
 <script>
